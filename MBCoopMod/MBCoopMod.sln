@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBCoopClient", "MBCoopClien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBCoopServer", "MBCoopServer\MBCoopServer.csproj", "{4C5F3968-DCF3-48F5-B7F3-C91FDDFF287D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MBCoopLibrary", "MBCoopLibrary\MBCoopLibrary.csproj", "{60D20EEA-FCE2-4FDA-8899-F6A0A8030DF0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4C5F3968-DCF3-48F5-B7F3-C91FDDFF287D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C5F3968-DCF3-48F5-B7F3-C91FDDFF287D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C5F3968-DCF3-48F5-B7F3-C91FDDFF287D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60D20EEA-FCE2-4FDA-8899-F6A0A8030DF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60D20EEA-FCE2-4FDA-8899-F6A0A8030DF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60D20EEA-FCE2-4FDA-8899-F6A0A8030DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60D20EEA-FCE2-4FDA-8899-F6A0A8030DF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

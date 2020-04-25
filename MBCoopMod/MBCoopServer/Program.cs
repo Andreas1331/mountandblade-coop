@@ -1,17 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MBCoopServer
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        private static Server _server;
+
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Server started!");
-            Console.ReadKey();
+            _server = new Server("127.0.0.1", 13000);
+            _server.StartServer();
+            _server.CheckConnections();
+
+            while (true)
+            {
+                string msg = Console.ReadLine();
+                _server.BroadcastMessage(msg);
+                Console.WriteLine("Sent: " + msg);
+            }
         }
     }
 }

@@ -201,8 +201,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client tools\Client.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MBCoopLibrary\MBCoopLibrary.csproj">
+      <Project>{60d20eea-fce2-4fda-8899-f6a0a8030df0}</Project>
+      <Name>MBCoopLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

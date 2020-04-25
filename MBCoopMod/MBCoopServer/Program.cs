@@ -16,7 +16,6 @@ namespace MBCoopServer
             {
                 string msg = Console.ReadLine();
                 _server.BroadcastMessage(msg);
-                Console.WriteLine("Sent: " + msg);
             }
         }
     }

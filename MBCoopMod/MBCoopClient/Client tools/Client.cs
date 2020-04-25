@@ -15,7 +15,6 @@ namespace MBCoopClient.Client_tools
         private readonly TcpClient _client;
         private readonly string _ipAddress;
         private readonly int _port;
-        bool conn = false;
 
         public Client(string ipAddress, int port, string username)
         {
@@ -35,28 +34,24 @@ namespace MBCoopClient.Client_tools
             {
                 while (true)
                 {
-                    if (!_client.Connected)
+                    if ((_client == null || !_client.Connected) && !shownMsg)
                     {
-                        if (!shownMsg)
-                        {
-                            InformationManager.DisplayMessage(new InformationMessage("You're no longer connected!"));
-                            shownMsg = !shownMsg;
-                        }
-                        //_client.Connect(_ipAddress, _port);
+                        InformationManager.DisplayMessage(new InformationMessage("You're no longer connected!"));
+                        shownMsg = !shownMsg;
+                        return;
                     }
-                    else
+                    if (_client.GetStream() == null)
+                        break;
+
+                    if (_client.GetStream().CanRead && _client.GetStream().DataAvailable)
                     {
-                        if(_client.GetStream() == null || !_client.GetStream().CanRead || !_client.GetStream().DataAvailable)
-                        {
-                            InformationManager.DisplayMessage(new InformationMessage("Here!"));
-                            return;
-                        }
+                        NetworkStream networkStream = _client.GetStream();
+                        byte[] dataBytes = new byte[256];
 
-                        StreamReader sr = new StreamReader(_client.GetStream());
-                        string message = sr.ReadLine();
-                        InformationManager.DisplayMessage(new InformationMessage(message));
+                        networkStream.Read(dataBytes, 0, dataBytes.Length);
+                        string dataFromClient = Encoding.UTF8.GetString(dataBytes);
 
-                        //MessageHandler.SendMessage(message);
+                        InformationManager.DisplayMessage(new InformationMessage("From server: " + dataFromClient));
                     }
                 }
             });
@@ -86,13 +81,22 @@ namespace MBCoopClient.Client_tools
                     {
                         int bytes = stream.Read(data, 0, data.Length);
                         responseData = Encoding.UTF8.GetString(data, 0, bytes);
-                        InformationManager.DisplayMessage(new InformationMessage(responseData));
-                        //MessageHandler.SendMessage(responseData);
+                        MessageHandler.SendMessage(responseData);
                         handle = !handle;
                     }
                 }
             }
-            conn = !conn;
+
+            MessageHandler.SendMessage("Done!");
+        }
+
+        public void SendMsg(string msg)
+        {
+            NetworkStream stream = _client.GetStream();
+
+            // Send the message to the TcpServer
+            byte[] usernameBytes = Encoding.UTF8.GetBytes(msg);
+            stream.Write(usernameBytes, 0, usernameBytes.Length);
         }
     }
 }

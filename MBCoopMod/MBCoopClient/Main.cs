@@ -14,6 +14,8 @@ namespace MBCoopClient
 {
     public class Main : MBSubModuleBase
     {
+        Client client;
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
@@ -23,7 +25,10 @@ namespace MBCoopClient
         {
             if (Input.IsKeyPressed(InputKey.K))
             {
-                Client client = new Client("127.0.0.1", 13000, Environment.UserName);
+                client = new Client("127.0.0.1", 13000, Environment.UserName);
+            }else if (Input.IsKeyPressed(InputKey.H))
+            {
+                client.SendMsg("Hej server!");
             }
         }
     }

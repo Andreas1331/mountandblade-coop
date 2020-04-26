@@ -201,7 +201,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client tools\Client.cs" />
+    <Compile Include="ClientData\Client.cs" />
+    <Compile Include="ClientData\Host.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

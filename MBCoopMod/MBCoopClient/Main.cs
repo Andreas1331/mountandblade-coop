@@ -1,4 +1,4 @@
-﻿using MBCoopClient.Client_tools;
+﻿using MBCoopClient.ClientData;
 using MBCoopLibrary;
 using System;
 using System.Collections.Generic;
@@ -25,10 +25,12 @@ namespace MBCoopClient
         {
             if (Input.IsKeyPressed(InputKey.K))
             {
-                client = new Client("127.0.0.1", 13000, Environment.UserName);
+                //client = new Client("127.0.0.1", 13000, Environment.UserName);
+                client = new Host("127.0.0.1", 13000, Environment.UserName);
+
             }else if (Input.IsKeyPressed(InputKey.H))
             {
-                client.SendMsg("Hej server!");
+                client.SendMessage("Hej server!$");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using MBCoopLibrary;
+using MBCoopLibrary.NetworkData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace MBCoopServer
 {
@@ -14,7 +16,8 @@ namespace MBCoopServer
         private readonly IPAddress _ipAddress;
         private readonly int _port;
         private readonly TcpListener _serverHandle;
-        private readonly List<TcpClient> _connectedClients = new List<TcpClient>();
+
+        private readonly Dictionary<string, Client> _connectedClients = new Dictionary<string, Client>();
 
         public Server(string ipAddress, int port)
         {
@@ -42,52 +45,6 @@ namespace MBCoopServer
                         // This is a blocking call, until a new connection is eastablished
                         TcpClient client = _serverHandle.AcceptTcpClient();
                         HandleNewConnection(client);
-
-                        // Continue to listen for input from the player, but on a new thread 
-                        Task.Run(() =>
-                        {
-                            while (!(client == null || !client.Connected || client.GetStream() == null))
-                            {
-                                try
-                                {
-                                    if(client.GetStream().CanRead && client.GetStream().DataAvailable)
-                                    {
-                                        // Load all the sent data into memory
-                                        byte[] data = new byte[1024];
-                                        using (MemoryStream ms = new MemoryStream())
-                                        {
-                                            NetworkStream networkStream = client.GetStream();
-                                            int numBytesRead = networkStream.Read(data, 0, data.Length);
-
-                                            do
-                                            {
-                                                ms.Write(data, 0, numBytesRead);
-                                                if (networkStream.DataAvailable)
-                                                {
-                                                    numBytesRead = networkStream.Read(data, 0, data.Length);
-                                                    if (!networkStream.DataAvailable)
-                                                    {
-                                                        ms.Write(data, 0, numBytesRead);
-                                                    }
-                                                }
-                                            }
-                                            while (networkStream.DataAvailable);
-
-                                            Console.WriteLine($"Received data ({ms.ToArray().Length} bytes)");
-
-                                            // Send the information to all the other clients
-                                            SendDataToClients(ms.ToArray());
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.ToString());
-                                }
-                            }
-                            // TODO: Remove the player from the list of players
-                            Console.WriteLine("Client has disconnected!");
-                        });
                     }
                 }
                 catch (Exception e)
@@ -104,14 +61,13 @@ namespace MBCoopServer
             });
         }
 
-        private void HandleNewConnection(TcpClient client)
+        private void HandleNewConnection(TcpClient tcpClient)
         {
-            NetworkStream stream = client.GetStream();
-            _connectedClients.Add(client);
+            NetworkStream stream = tcpClient.GetStream();
 
             int i;
             byte[] buffer = new byte[256];
-            string username;
+            string username = "";
             // Loop to receive all the data sent by the client.
             while (!stream.DataAvailable) ;
             while (stream.DataAvailable)
@@ -121,42 +77,51 @@ namespace MBCoopServer
                 Console.WriteLine($"User {username} has connected to the server.");
             }
 
-            if (stream.CanWrite)
+            // Ensure the client isn't connected already
+            if (_connectedClients.ContainsKey(username))
             {
-                // Send back a response.
-                byte[] msg = Encoding.UTF8.GetBytes("[MBCoop] You've successfully connected!");
-                stream.Write(msg, 0, msg.Length);
+                if (stream.CanWrite)
+                {
+                    // Send back a response.
+                    byte[] alreadyConnectedMsg = Encoding.UTF8.GetBytes("[MBCoop] You're already connected!");
+                    stream.Write(alreadyConnectedMsg, 0, alreadyConnectedMsg.Length);
+                }
+
+                stream.Close();
+                tcpClient.Close();
+                return;
+            }
+            else
+            {
+                Client client = new Client(tcpClient, HandleClientPacketReceived);
+                if (stream.CanWrite)
+                {
+                    // Send back a response.
+                    byte[] msg = Encoding.UTF8.GetBytes("[MBCoop] You've successfully connected!");
+                    stream.Write(msg, 0, msg.Length);
+                }
+                _connectedClients.Add(username, client);
             }
         }
 
-        public void SendDataToClients(byte[] data)
+        public void BroadcastMessage(string message)
         {
             lock (_connectedClients)
             {
-                foreach (TcpClient client in _connectedClients)
+                Packet packet = new Packet(Commands.Message, Encoding.UTF8.GetBytes(message));
+                foreach(Client cl in _connectedClients.Values)
                 {
-                    NetworkStream stream = client.GetStream();
-
-                    // Send the message to the TcpServer
-                    stream.Write(data, 0, data.Length);
+                    cl.SendPacket(packet);
                 }
             }
         }
 
-        public void BroadcastMessage(string msg)
+        private void HandleClientPacketReceived(Packet packet)
         {
-            lock (_connectedClients)
+            if(packet != null)
             {
-                foreach (TcpClient client in _connectedClients)
-                {
-                    NetworkStream stream = client.GetStream();
-
-                    // Send the message to the TcpServer
-                    byte[] msgBytes = Encoding.UTF8.GetBytes(msg + "$");
-                    stream.Write(msgBytes, 0, msgBytes.Length);
-                }
+                Console.WriteLine("Command: " + packet.Command + " | Data: " + Encoding.UTF8.GetString(packet.Data));
             }
-            Console.WriteLine("Sent message: " + msg);
         }
     }
 }

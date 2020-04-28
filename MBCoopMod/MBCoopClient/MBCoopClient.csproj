@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -201,8 +204,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientData\Client.cs" />
-    <Compile Include="ClientData\Host.cs" />
+    <Compile Include="ClientHandler.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -212,6 +214,9 @@
       <Project>{60d20eea-fce2-4fda-8899-f6a0a8030df0}</Project>
       <Name>MBCoopLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

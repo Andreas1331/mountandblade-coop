@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MBCoopLibrary.NetworkData;
+using System;
+using System.Text;
 
 namespace MBCoopServer
 {
@@ -8,7 +10,7 @@ namespace MBCoopServer
 
         private static void Main(string[] args)
         {
-            _server = new Server("127.0.0.1", 13000);
+            _server = new Server("192.168.0.22", 13000);
             _server.StartServer();
 
             while (true)

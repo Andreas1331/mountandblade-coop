@@ -2,12 +2,10 @@
 using MBCoopLibrary.NetworkData;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace MBCoopServer
 {
@@ -78,14 +76,15 @@ namespace MBCoopServer
                 Console.WriteLine($"User {username} has connected to the server.");
             }
 
+            byte[] responseData;
             // Ensure the client isn't connected already
             if (_connectedClients.ContainsKey(username))
             {
                 if (stream.CanWrite)
                 {
                     // Send back a response.
-                    byte[] alreadyConnectedMsg = Encoding.UTF8.GetBytes("[MBCoop] You're already connected!");
-                    stream.Write(alreadyConnectedMsg, 0, alreadyConnectedMsg.Length);
+                    responseData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You're already connected!", null });
+                    stream.Write(responseData, 0, responseData.Length);
                 }
 
                 Console.WriteLine($"User {username} was already connected. Connection has been terminated.");
@@ -98,10 +97,9 @@ namespace MBCoopServer
                 Client client = new Client(nextClientID++, tcpClient, HandleClientPacketReceived);
                 if (stream.CanWrite)
                 {
-                    // Send back a response.
-                    byte[] msg = Encoding.UTF8.GetBytes("[MBCoop] You've successfully connected!");
-                    byte[] welcomeData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
-                    stream.Write(welcomeData, 0, welcomeData.Length);
+                    // Send back a response, and the assigned client ID
+                    responseData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
+                    stream.Write(responseData, 0, responseData.Length);
                 }
                 _connectedClients.Add(username, client);
             }

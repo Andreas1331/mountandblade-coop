@@ -39,6 +39,8 @@ namespace MBCoopClient
             if (result.Item1)
             {
                 MessageHandler.SendMessage(result.Item2[0].ToString());
+                Client.ID = Convert.ToInt32(result.Item2[1]);
+                MessageHandler.SendMessage("Granted ID : " + Client.ID);
                 HandleFirstTimeConnecting();
             }
             else

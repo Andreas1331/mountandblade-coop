@@ -8,7 +8,7 @@ namespace MBCoopLibrary.NetworkData
 {
     public class Client
     {
-        public readonly int ID;
+        public int ID;
         public TcpClient TcpClientHandle { get; private set; }
         private readonly string _username;
         public readonly bool IsHost = false;
@@ -27,6 +27,7 @@ namespace MBCoopLibrary.NetworkData
         // Used by the server
         public Client(int id, TcpClient tcpClient, OnPacketReceived packetReceived)
         {
+            ID = id;
             TcpClientHandle = tcpClient;
             _packetReceived = packetReceived;
             ListenForPackets();
@@ -47,8 +48,6 @@ namespace MBCoopLibrary.NetworkData
             // Buffer to store the response bytes
             byte[] data = new byte[256];
 
-            // String to store the response UTF8 representation
-            string responseData;
             // Read the first batch of the TcpServer response bytes
             if (stream.CanRead)
             {
@@ -57,13 +56,10 @@ namespace MBCoopLibrary.NetworkData
                 {
                     if (stream.DataAvailable)
                     {
-                        int bytes = stream.Read(data, 0, data.Length);
-                        //responseData = Encoding.UTF8.GetString(data, 0, bytes);
-
+                        stream.Read(data, 0, data.Length);
                         object[] response = Packet.FromByteArray<object[]>(data);
                         ListenForPackets();
                         handle = !handle;
-
                         return new Tuple<bool, object[]>(true, response);
                     }
                 }

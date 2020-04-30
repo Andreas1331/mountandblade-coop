@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientHandler.cs" />
+    <Compile Include="HarmonyPatches\MobilePartyPatches.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Network\DataStructures\MobilePartyNetworkContainer.cs" />

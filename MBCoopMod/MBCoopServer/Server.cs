@@ -17,6 +17,7 @@ namespace MBCoopServer
         private readonly int _port;
         private readonly TcpListener _serverHandle;
 
+        private int nextClientID = 0;
         private readonly Dictionary<string, Client> _connectedClients = new Dictionary<string, Client>();
 
         public Server(string ipAddress, int port)
@@ -87,18 +88,20 @@ namespace MBCoopServer
                     stream.Write(alreadyConnectedMsg, 0, alreadyConnectedMsg.Length);
                 }
 
+                Console.WriteLine($"User {username} was already connected. Connection has been terminated.");
                 stream.Close();
                 tcpClient.Close();
                 return;
             }
             else
             {
-                Client client = new Client(tcpClient, HandleClientPacketReceived);
+                Client client = new Client(nextClientID++, tcpClient, HandleClientPacketReceived);
                 if (stream.CanWrite)
                 {
                     // Send back a response.
                     byte[] msg = Encoding.UTF8.GetBytes("[MBCoop] You've successfully connected!");
-                    stream.Write(msg, 0, msg.Length);
+                    byte[] welcomeData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
+                    stream.Write(welcomeData, 0, welcomeData.Length);
                 }
                 _connectedClients.Add(username, client);
             }
@@ -120,7 +123,10 @@ namespace MBCoopServer
         {
             if(packet != null)
             {
-                Console.WriteLine("Command: " + packet.Command + " | Data: " + Encoding.UTF8.GetString(packet.Data));
+                foreach(Client client in _connectedClients.Values)
+                {
+                    client.SendPacket(packet);
+                }
             }
         }
     }

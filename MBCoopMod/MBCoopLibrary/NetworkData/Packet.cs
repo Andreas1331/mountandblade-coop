@@ -7,6 +7,8 @@ namespace MBCoopLibrary.NetworkData
     public class Packet
     {
         [JsonProperty]
+        public int ClientID { get; set; }
+        [JsonProperty]
         public Commands Command { get; set; }
         [JsonProperty]
         public byte[] Data { get; set; }
@@ -17,7 +19,7 @@ namespace MBCoopLibrary.NetworkData
             Data = data;
         }
 
-        // Serialize to Json
+        // Serialize 
         public string ToJson()
         {
             return JsonConvert.SerializeObject(this);
@@ -28,6 +30,7 @@ namespace MBCoopLibrary.NetworkData
         {
             return JsonConvert.DeserializeObject<Packet>(jsonData);
         }
+
         public static byte[] ObjectToByteArray<T>(T obj)
         {
             if (obj == null)

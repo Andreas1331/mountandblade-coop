@@ -8,19 +8,24 @@ namespace MBCoopLibrary.NetworkData
 {
     public class Client
     {
+        public readonly int ID;
         public TcpClient TcpClientHandle { get; private set; }
         private readonly string _username;
+        public readonly bool IsHost = false;
 
         public delegate void OnPacketReceived(Packet packet);
         private OnPacketReceived _packetReceived; 
 
-        public Client(string username, OnPacketReceived packetReceived)
+        // Used by the client
+        public Client(string username, OnPacketReceived packetReceived, bool isHost)
         {
             _username = username;
             _packetReceived = packetReceived;
+            IsHost = isHost;
         }
 
-        public Client(TcpClient tcpClient, OnPacketReceived packetReceived)
+        // Used by the server
+        public Client(int id, TcpClient tcpClient, OnPacketReceived packetReceived)
         {
             TcpClientHandle = tcpClient;
             _packetReceived = packetReceived;
@@ -28,8 +33,7 @@ namespace MBCoopLibrary.NetworkData
         }
 
         // TODO: Refactor so it's reading the response from the server properly + make it async
-        // TODO: Make it return a bool to determine the success, and let the mod react to that
-        public void ConnectToServer(string ipAddress, int port)
+        public Tuple<bool, object[]> ConnectToServer(string ipAddress, int port)
         {
             // Create the TcpClient
             TcpClientHandle = new TcpClient(ipAddress, port);
@@ -43,7 +47,7 @@ namespace MBCoopLibrary.NetworkData
             // Buffer to store the response bytes
             byte[] data = new byte[256];
 
-            // String to store the response ASCII representation
+            // String to store the response UTF8 representation
             string responseData;
             // Read the first batch of the TcpServer response bytes
             if (stream.CanRead)
@@ -54,14 +58,19 @@ namespace MBCoopLibrary.NetworkData
                     if (stream.DataAvailable)
                     {
                         int bytes = stream.Read(data, 0, data.Length);
-                        responseData = Encoding.UTF8.GetString(data, 0, bytes);
-                        Debug.WriteLine(responseData);
+                        //responseData = Encoding.UTF8.GetString(data, 0, bytes);
+
+                        object[] response = Packet.FromByteArray<object[]>(data);
+                        ListenForPackets();
                         handle = !handle;
+
+                        return new Tuple<bool, object[]>(true, response);
                     }
                 }
             }
 
-            ListenForPackets();
+            // We failed to establish a connection
+            return null;
         }
 
         private bool IsDisconnected()
@@ -83,18 +92,18 @@ namespace MBCoopLibrary.NetworkData
             {
                 NetworkStream stream = TcpClientHandle.GetStream();
 
-                // convert JSON to buffer and its length to a 16 bit unsigned integer buffer
-                byte[] jsonBuffer = Encoding.UTF8.GetBytes(packet.ToJson());
-                byte[] lengthBuffer = BitConverter.GetBytes(Convert.ToUInt16(jsonBuffer.Length));
+                // Convert JSON to dataBuffer and its length to a 16 bit unsigned integer buffer
+                byte[] dataBuffer = Encoding.UTF8.GetBytes(packet.ToJson());
+                byte[] lengthBuffer = BitConverter.GetBytes(Convert.ToUInt16(dataBuffer.Length));
 
                 // Join the buffers
-                byte[] msgBuffer = new byte[lengthBuffer.Length + jsonBuffer.Length];
+                byte[] msgBuffer = new byte[lengthBuffer.Length + dataBuffer.Length];
                 lengthBuffer.CopyTo(msgBuffer, 0);
-                jsonBuffer.CopyTo(msgBuffer, lengthBuffer.Length);
+                dataBuffer.CopyTo(msgBuffer, lengthBuffer.Length);
 
                 // Send the packet
                 stream.Write(msgBuffer, 0, msgBuffer.Length);
-                Debug.WriteLine("Sent: " + Encoding.UTF8.GetString(packet.Data));
+                Debug.WriteLine("Sent package!");
             }
             catch (Exception e)
             {

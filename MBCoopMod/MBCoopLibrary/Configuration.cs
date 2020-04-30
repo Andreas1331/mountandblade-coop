@@ -9,6 +9,8 @@ namespace MBCoopLibrary
     public enum Commands
     {
         SendPosition,
+        SendPartyDetails,
+        SendPartyGotoPoint,
         Message
     }
 

@@ -1,0 +1,112 @@
+﻿                MobileParty party = MobileParty.MainParty;
+                MessageHandler.SendMessage("Party: " + party.Name.ToString());
+
+                var jsonResolver = new PropertyIgnoreSerializerContractResolver();
+                jsonResolver.IgnoreProperty(typeof(Settlement), "LastVisitedSettlement");
+                jsonResolver.IgnoreProperty(typeof(Settlement), "TargetSettlement");
+                jsonResolver.IgnoreProperty(typeof(Settlement), "HomeSettlement");
+                jsonResolver.IgnoreProperty(typeof(Settlement), "CurrentSettlement");
+                jsonResolver.IgnoreProperty(typeof(Settlement), "BesiegedSettlement");
+                jsonResolver.IgnoreProperty(typeof(Settlement), "ShortTermTargetSettlement");
+                jsonResolver.IgnoreProperty(typeof(PartyBase), "Party");
+                jsonResolver.IgnoreProperty(typeof(PartyBase), "AiBehaviorObject");
+                jsonResolver.IgnoreProperty(typeof(Hero), "EffectiveScout");
+                jsonResolver.IgnoreProperty(typeof(Hero), "EffectiveQuartermaster");
+                jsonResolver.IgnoreProperty(typeof(Hero), "EffectiveEngineer");
+                jsonResolver.IgnoreProperty(typeof(Hero), "EffectiveSurgeon");
+                jsonResolver.IgnoreProperty(typeof(Hero), "Quartermaster");
+                jsonResolver.IgnoreProperty(typeof(Hero), "Scout");
+                jsonResolver.IgnoreProperty(typeof(Hero), "LeaderHero");
+                jsonResolver.IgnoreProperty(typeof(Hero), "Engineer");
+                jsonResolver.IgnoreProperty(typeof(Hero), "Surgeon");
+                jsonResolver.IgnoreProperty(typeof(Hero), "EscortHero");
+                jsonResolver.IgnoreProperty(typeof(CharacterObject), "Leader");
+                jsonResolver.IgnoreProperty(typeof(IFaction), "MapFaction");
+                jsonResolver.IgnoreProperty(typeof(NavigationPath), "Path");
+                jsonResolver.IgnoreProperty(typeof(PathFaceRecord), "CurrentNavigationFace");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "TargetPosition");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "VisualPosition2DWithoutError");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "MoveDirection");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "ArmyPositionAdder");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "AiBehaviorTarget");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "MoveTargetPoint");
+                jsonResolver.IgnoreProperty(typeof(Vec2), "Bearing");
+                jsonResolver.IgnoreProperty(typeof(MobileParty), "TargetParty");
+                jsonResolver.IgnoreProperty(typeof(MobileParty), "AttachedParties");
+                jsonResolver.IgnoreProperty(typeof(MobileParty), "AttachedTo");
+                jsonResolver.IgnoreProperty(typeof(MobileParty), "ShortTermTargetParty");
+                jsonResolver.IgnoreProperty(typeof(MobileParty), "MoveTargetParty");
+                jsonResolver.IgnoreProperty(typeof(BesiegerCamp), "BesiegerCamp");
+                jsonResolver.IgnoreProperty(typeof(MapEvent), "MapEvent");
+                jsonResolver.IgnoreProperty(typeof(SiegeEvent), "SiegeEvent");
+                jsonResolver.IgnoreProperty(typeof(float), "SeeingRange");
+                jsonResolver.IgnoreProperty(typeof(float), "TotalWeightCarried");
+                jsonResolver.IgnoreProperty(typeof(float), "Food");
+                jsonResolver.IgnoreProperty(typeof(float), "FoodChange");
+                jsonResolver.IgnoreProperty(typeof(int), "TotalFoodAtInventory");
+                jsonResolver.IgnoreProperty(typeof(bool), "IsCurrentlyGoingToSettlement");
+                jsonResolver.IgnoreProperty(typeof(bool), "IsHolding");
+                jsonResolver.IgnoreProperty(typeof(bool), "IsEngaging");
+                jsonResolver.IgnoreProperty(typeof(bool), "IsRaiding");
+                jsonResolver.IgnoreProperty(typeof(bool), "IsMoving");
+                jsonResolver.IgnoreProperty(typeof(MoveModeType), "PartyMoveMode");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "FoodChangeExplained");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "SpeedExplanation");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "HealingRateForRegularsExplained");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "HealingRateForHeroesExplained");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "SeeingRangeExplanation");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "InventoryCapacityExplanation");
+                jsonResolver.IgnoreProperty(typeof(StatExplainer), "MoraleExplainer");
+
+                var serializerSettings = new JsonSerializerSettings();
+                serializerSettings.ContractResolver = jsonResolver;
+
+                var data = JsonConvert.SerializeObject(party, Formatting.Indented, serializerSettings);
+
+                var jsonResolver2 = new PropertyIgnoreSerializerContractResolver();
+                jsonResolver2.IgnoreProperty(typeof(CharacterObject[]), "UpgradeTargets");
+                jsonResolver2.IgnoreProperty(typeof(CharacterObject), "TemplateCharacter");
+                jsonResolver2.IgnoreProperty(typeof(CultureObject), "Culture");
+
+                var serializerSettings2 = new JsonSerializerSettings();
+                serializerSettings2.ContractResolver = jsonResolver2;
+
+
+
+
+                var data2 = JsonConvert.SerializeObject(party.MemberRoster.Troops.Last(), Formatting.Indented, serializerSettings2);
+
+                string path = @"C:\Users\andre\Documents\GitHub\MBCoop\MBCoopMod\MBCoopClient\hejsa.txt";
+                string path2 = @"C:\Users\andre\Documents\GitHub\MBCoop\MBCoopMod\MBCoopClient\hejsa2.txt";
+
+                // This text is added only once to the file.
+                if (!File.Exists(path))
+                {
+                    // Create a file to write to.
+                    File.WriteAllText(path, data);
+                    File.WriteAllText(path2, data2);
+
+                    // This text is always added, making the file longer over time
+                    // if it is not deleted.
+                    StringBuilder soldiers = new StringBuilder();
+                    foreach(CharacterObject soldier in party.MemberRoster.Troops)
+                    {
+                        soldiers.Append($"Name: {soldier.Name}\n");
+                    }
+
+                    File.AppendAllText(path, soldiers.ToString());
+
+                    // Open the file to read from.
+                    string readText = File.ReadAllText(path);
+                    Console.WriteLine(readText);
+                }
+
+                MobileParty newParty = JsonConvert.DeserializeObject<MobileParty>(data);
+                MessageHandler.SendMessage("NewParty: " + newParty.Name.ToString());
+
+                //var jsonResolver = new IgnorableSerializerContractResolver();
+                //// ignore single property
+                //jsonResolver.Ignore(typeof(Settlement), "LastVisitedSettlement");
+                //// ignore single datatype
+                //var jsonSettings = new JsonSerializerSettings() { ContractResolver = jsonResolver };
+                //string data = JsonConvert.SerializeObject(party, Formatting.Indented, jsonSettings);

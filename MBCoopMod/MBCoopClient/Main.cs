@@ -2,7 +2,6 @@
 using MBCoopLibrary;
 using MBCoopLibrary.NetworkData;
 using System.Text;
-using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.MountAndBlade;
 
@@ -17,11 +16,11 @@ namespace MBCoopClient
             harmony.PatchAll();
         }
 
-        public override void OnGameInitializationFinished(Game game)
-        {
-            base.OnGameInitializationFinished(game);
-            //ClientHandler.Instance.StartConnection();
-        }
+        //public override void OnGameInitializationFinished(Game game)
+        //{
+        //    base.OnGameInitializationFinished(game);
+        //    //ClientHandler.Instance.StartConnection();
+        //}
 
         protected override void OnApplicationTick(float dt)
         {
@@ -31,7 +30,7 @@ namespace MBCoopClient
             }
             else if (Input.IsKeyPressed(InputKey.H))
             {
-                Packet packet = new Packet(Commands.Message, Encoding.UTF8.GetBytes("This is from the client!"));
+                Packet packet = new Packet(Commands.SendMessage, Encoding.UTF8.GetBytes("This is from the client!"));
                 ClientHandler.Instance.Client.SendPacket(packet);
             }
         }

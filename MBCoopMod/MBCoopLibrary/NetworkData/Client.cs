@@ -13,11 +13,11 @@ namespace MBCoopLibrary.NetworkData
         public TcpClient TcpClientHandle { get; private set; }
         public readonly bool IsHost = false;
 
-        public delegate void OnPacketReceived(Packet packet);
-        private OnPacketReceived _packetReceived; 
+        public delegate void OnPacketReceivedDel(Packet packet);
+        private OnPacketReceivedDel _packetReceived; 
 
         // Used by the client
-        public Client(string username, OnPacketReceived packetReceived, bool isHost)
+        public Client(string username, OnPacketReceivedDel packetReceived, bool isHost)
         {
             Username = username;
             _packetReceived = packetReceived;
@@ -25,7 +25,7 @@ namespace MBCoopLibrary.NetworkData
         }
 
         // Used by the server
-        public Client(string username, int id, TcpClient tcpClient, OnPacketReceived packetReceived)
+        public Client(string username, int id, TcpClient tcpClient, OnPacketReceivedDel packetReceived)
         {
             Username = username;
             ID = id;

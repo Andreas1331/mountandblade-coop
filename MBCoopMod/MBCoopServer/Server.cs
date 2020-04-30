@@ -115,7 +115,7 @@ namespace MBCoopServer
         {
             lock (_connectedClients)
             {
-                Packet packet = new Packet(Commands.Message, Encoding.UTF8.GetBytes(message));
+                Packet packet = new Packet(Commands.SendMessage, Encoding.UTF8.GetBytes(message));
                 SendPacketToClients(packet, excludedClients);
             }
         }

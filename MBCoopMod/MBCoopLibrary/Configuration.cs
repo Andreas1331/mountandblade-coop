@@ -11,8 +11,9 @@ namespace MBCoopLibrary
         SendPosition,
         SendPartyDetails,
         SendPartyGotoPoint,
+        SendPartyGotoSettlement,
         NewPlayerConnectedID,
-        Message
+        SendMessage
     }
 
     public class Configuration

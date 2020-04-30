@@ -213,6 +213,8 @@
     <Compile Include="Main.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
     <Compile Include="Network\DataStructures\MobilePartyNetworkContainer.cs" />
+    <Compile Include="Network\DataStructures\Vector2.cs" />
+    <Compile Include="PacketTools\PacketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

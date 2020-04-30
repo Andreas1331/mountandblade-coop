@@ -20,14 +20,18 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToSettlement")]
         private static void PrefixPatch_SetMoveGotoSettlement(MobileParty __instance, Settlement settlement)
         {
-            if (__instance != ClientHandler.Instance.otherClient)
+            if (ClientHandler.Instance.Client.IsHost)
             {
-                return;
-                MessageHandler.SendMessage("SetMoveGoToSettlement!");
-                MobilePartyNetworkContainer container = new MobilePartyNetworkContainer("", settlement.Position2D.x, settlement.Position2D.y);
-                Packet packet = new Packet(Commands.SendPartyGotoPoint, Packet.ObjectToByteArray(container));
-                if (ClientHandler.Instance.Client != null)
+                // Send everything
+            }
+            else
+            {
+                // This is a client, so only send his own movement
+                if (__instance.IsMainParty)
                 {
+                    string settlementName = settlement.GetName().ToString();
+                    byte[] data = Encoding.UTF8.GetBytes(settlementName);
+                    Packet packet = new Packet(Commands.SendPartyGotoSettlement, data);
                     ClientHandler.Instance.Client.SendPacket(packet);
                 }
             }
@@ -37,6 +41,17 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
+            if (ClientHandler.Instance.Client.IsHost)
+            {
+                // Send everything
+            }
+            else
+            {
+                // This is a client, so only send his own movement
+                if (__instance.IsMainParty)
+                {
+                }
+            }
         }
     }
 }

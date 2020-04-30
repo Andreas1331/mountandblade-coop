@@ -10,6 +10,7 @@ using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using System.Collections.Generic;
+using MBCoopClient.PacketTools;
 
 namespace MBCoopClient
 {
@@ -29,7 +30,18 @@ namespace MBCoopClient
         }
         public List<int> otherClients = new List<int>();
 
-        public Client Client;
+        private Client _client;
+        public Client Client
+        {
+            get
+            {
+                return _client == null ? throw new Exception("Client is null!") : _client;
+            }
+            set
+            {
+                _client = value;
+            }
+        }
 
         public MobileParty otherClient;
 
@@ -56,37 +68,10 @@ namespace MBCoopClient
         {
             if(packet != null)
             {
-                // TODO: Setup dictionary<Command, Action<packet> and invoke based on command.
-                switch (packet.Command)
+                PacketHandler.HandlePacketDel packetMethod;
+                if(PacketHandler.PacketMethods.TryGetValue(packet.Command, out packetMethod))
                 {
-                    case Commands.SendPartyDetails:
-                        MobilePartyNetworkContainer container = Packet.FromByteArray<MobilePartyNetworkContainer>(packet.Data);
-                        otherClient = MBObjectManager.Instance.CreateObject<MobileParty>(container.Name);
-                        otherClient.InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), new Vec2(container.PosX, container.PosY), 5);
-                        otherClient.Party.Visuals.SetMapIconAsDirty();
-                        otherClient.IsLordParty = true;
-                        //otherClient.DisableAi();
-                        otherClient.Ai.SetDoNotMakeNewDecisions(true);
-                        otherClient.Party.AddMembers(MobileParty.MainParty.MemberRoster.ToFlattenedRoster());
-                        break;
-                    case Commands.SendPosition:
-                        break;
-                    case Commands.SendPartyGotoPoint:
-                        MobilePartyNetworkContainer container2 = Packet.FromByteArray<MobilePartyNetworkContainer>(packet.Data);
-                        MessageHandler.SendMessage("Received SendPartyGotoPoint: " + container2.PosX + "," + container2.PosY);
-                        otherClient.SetMoveGoToPoint(new Vec2(container2.PosX, container2.PosY));
-                        break;
-                    case Commands.Message:
-                        string msg = Encoding.UTF8.GetString(packet.Data);
-                        MessageHandler.SendMessage(msg);
-                        break;
-                    case Commands.NewPlayerConnectedID:
-                        // TODO: Do a proper try-parse
-                        int id = int.Parse(Encoding.UTF8.GetString(packet.Data));
-                        otherClients.Add(id);
-                        break;
-                    default:
-                        break;
+                    packetMethod.Invoke(packet);
                 }
             }
         }

@@ -8,9 +8,9 @@ namespace MBCoopLibrary.NetworkData
 {
     public class Client
     {
+        public readonly string Username;
         public int ID;
         public TcpClient TcpClientHandle { get; private set; }
-        private readonly string _username;
         public readonly bool IsHost = false;
 
         public delegate void OnPacketReceived(Packet packet);
@@ -19,14 +19,15 @@ namespace MBCoopLibrary.NetworkData
         // Used by the client
         public Client(string username, OnPacketReceived packetReceived, bool isHost)
         {
-            _username = username;
+            Username = username;
             _packetReceived = packetReceived;
             IsHost = isHost;
         }
 
         // Used by the server
-        public Client(int id, TcpClient tcpClient, OnPacketReceived packetReceived)
+        public Client(string username, int id, TcpClient tcpClient, OnPacketReceived packetReceived)
         {
+            Username = username;
             ID = id;
             TcpClientHandle = tcpClient;
             _packetReceived = packetReceived;
@@ -41,7 +42,7 @@ namespace MBCoopLibrary.NetworkData
             NetworkStream stream = TcpClientHandle.GetStream();
 
             // Send the message to the TcpServer
-            byte[] usernameBytes = Encoding.UTF8.GetBytes(_username);
+            byte[] usernameBytes = Encoding.UTF8.GetBytes(Username);
             stream.Write(usernameBytes, 0, usernameBytes.Length);
 
             // Receive the TcpServer response

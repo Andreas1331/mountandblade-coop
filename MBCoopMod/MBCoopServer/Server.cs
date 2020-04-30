@@ -2,6 +2,7 @@
 using MBCoopLibrary.NetworkData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -16,7 +17,7 @@ namespace MBCoopServer
         private readonly TcpListener _serverHandle;
 
         private int nextClientID = 0;
-        private readonly Dictionary<string, Client> _connectedClients = new Dictionary<string, Client>();
+        private readonly List<Client> _connectedClients = new List<Client>();
 
         public Server(string ipAddress, int port)
         {
@@ -78,7 +79,7 @@ namespace MBCoopServer
 
             byte[] responseData;
             // Ensure the client isn't connected already
-            if (_connectedClients.ContainsKey(username))
+            if(_connectedClients.FirstOrDefault(x => x.Username.Equals(username)) != null)
             {
                 if (stream.CanWrite)
                 {
@@ -94,25 +95,41 @@ namespace MBCoopServer
             }
             else
             {
-                Client client = new Client(nextClientID++, tcpClient, HandleClientPacketReceived);
                 if (stream.CanWrite)
                 {
+                    Client client = new Client(username, nextClientID++, tcpClient, HandleClientPacketReceived);
+                    _connectedClients.Add(client);
                     // Send back a response, and the assigned client ID
                     responseData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
                     stream.Write(responseData, 0, responseData.Length);
+                    // Let the other clients know that a new player has connected. Send the ID along.
+                    Packet packet = new Packet(Commands.NewPlayerConnectedID, Encoding.UTF8.GetBytes(client.ID.ToString()));
+                    SendPacketToClients(packet);
+                    // Now broadcast a message to everyone else
+                    BroadcastMessage($"[MBCoop] Client: {client.Username} has connected to the server!");
                 }
-                _connectedClients.Add(username, client);
             }
         }
 
-        public void BroadcastMessage(string message)
+        public void BroadcastMessage(string message, params Client[] excludedClients)
         {
             lock (_connectedClients)
             {
                 Packet packet = new Packet(Commands.Message, Encoding.UTF8.GetBytes(message));
-                foreach(Client cl in _connectedClients.Values)
+                SendPacketToClients(packet, excludedClients);
+            }
+        }
+
+        private void SendPacketToClients(Packet packet, params Client[] excludedClients)
+        {
+            lock (_connectedClients)
+            {
+                foreach (Client cl in _connectedClients)
                 {
-                    cl.SendPacket(packet);
+                    if(!Array.Exists(excludedClients, x => x == cl))
+                    {
+                        cl.SendPacket(packet);
+                    }
                 }
             }
         }
@@ -121,7 +138,7 @@ namespace MBCoopServer
         {
             if(packet != null)
             {
-                foreach(Client client in _connectedClients.Values)
+                foreach(Client client in _connectedClients)
                 {
                     client.SendPacket(packet);
                 }

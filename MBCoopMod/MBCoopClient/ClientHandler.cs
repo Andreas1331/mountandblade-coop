@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using System.Collections.Generic;
 
 namespace MBCoopClient
 {
@@ -26,6 +27,7 @@ namespace MBCoopClient
                 _instance = value;
             }
         }
+        public List<int> otherClients = new List<int>();
 
         public Client Client;
 
@@ -54,7 +56,7 @@ namespace MBCoopClient
         {
             if(packet != null)
             {
-                MessageHandler.SendMessage("Packet received!");
+                // TODO: Setup dictionary<Command, Action<packet> and invoke based on command.
                 switch (packet.Command)
                 {
                     case Commands.SendPartyDetails:
@@ -78,6 +80,11 @@ namespace MBCoopClient
                         string msg = Encoding.UTF8.GetString(packet.Data);
                         MessageHandler.SendMessage(msg);
                         break;
+                    case Commands.NewPlayerConnectedID:
+                        // TODO: Do a proper try-parse
+                        int id = int.Parse(Encoding.UTF8.GetString(packet.Data));
+                        otherClients.Add(id);
+                        break;
                     default:
                         break;
                 }
@@ -88,6 +95,7 @@ namespace MBCoopClient
         {
             // Send data. Determine if I'm the host or a client first.
             // Client needs to send information regarding his party.
+            // TODO: Delete all the clients Ai
             if (Client.IsHost)
             {
                 MobileParty party = MobileParty.MainParty;
@@ -103,7 +111,5 @@ namespace MBCoopClient
                 }
             }
         }
-
-
     }
 }

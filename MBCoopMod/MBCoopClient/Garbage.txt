@@ -169,3 +169,19 @@
             return _ignores[type].Contains(jsonPropertyName);
         }
     }
+
+        //[HarmonyPatch]
+    //public static class PatchCreateObject
+    //{
+    //    private static MethodBase TargetMethod() => typeof(MBObjectManager).GetMethod("CreateObject", new Type[] { typeof(string) }).MakeGenericMethod(typeof(MobileParty));
+
+    //    public static void Postfix(string stringId)
+    //    {
+    //        MessageHandler.SendMessage("String: " + stringId);
+    //    }
+
+    //    public static void Prefix(string stringId)
+    //    {
+    //        MessageHandler.SendMessage("String: " + stringId);
+    //    }
+    //}

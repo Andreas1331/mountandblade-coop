@@ -61,7 +61,7 @@ namespace MBCoopLibrary.NetworkData
                         object[] response = Packet.FromByteArray<object[]>(data);
                         ListenForPackets();
                         handle = !handle;
-                        return new Tuple<bool, object[]>(true, response);
+                        return new Tuple<bool, object[]>(response[1] != null, response);
                     }
                 }
             }

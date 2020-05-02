@@ -20,9 +20,22 @@ namespace MBCoopClient.HarmonyPatches
     {
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MobileParty), MethodType.Constructor)]
-        private static void PostfixPatch_Constructor()
+        private static void PostfixPatch_Constructor(MobileParty __instance)
         {
-            MessageHandler.SendMessage("New parttyy123yday");
+            // The host will send information about a new party getting created
+            if (ClientHandler.Instance.Client.IsHost)
+            {
+                // TODO: Send new party details ...
+            }
+            else
+            {
+
+            }
+            // The client will keep track of newly created parties incase they were added by his own game
+            if (__instance.Name.Equals("{=!}unnamedMobileParty"))
+            {
+                MessageHandler.SendMessage("New MobileParty: " + __instance.Name.Length);
+            }
         }
 
         [HarmonyPrefix]

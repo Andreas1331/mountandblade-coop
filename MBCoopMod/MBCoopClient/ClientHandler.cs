@@ -43,8 +43,6 @@ namespace MBCoopClient
             }
         }
 
-        public MobileParty otherClient;
-
         public void StartConnection()
         {
             Client = new Client(Environment.UserName, OnClientPacketReceived, isHost: (Environment.UserName.Equals("andre")));

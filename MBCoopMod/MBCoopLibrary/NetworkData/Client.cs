@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using TaleWorlds.CampaignSystem;
 
 namespace MBCoopLibrary.NetworkData
 {
@@ -162,5 +163,7 @@ namespace MBCoopLibrary.NetworkData
                 }
             });
         }
+
+        public virtual void OnMobilePartyInit(MobileParty party);
     }
 }

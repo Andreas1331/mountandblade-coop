@@ -11,8 +11,6 @@ using TaleWorlds.MountAndBlade;
 
 namespace MBCoopClient
 {
-
-
     public class Main : MBSubModuleBase
     {
         protected override void OnSubModuleLoad()

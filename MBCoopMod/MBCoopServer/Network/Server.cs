@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MBCoopServer
+namespace MBCoopServer.Network
 {
     public class Server
     {
@@ -17,7 +17,7 @@ namespace MBCoopServer
         private readonly TcpListener _serverHandle;
 
         private int nextClientID = 0;
-        private readonly List<Client> _connectedClients = new List<Client>();
+        private readonly List<ServerClient> _connectedClients = new List<ServerClient>();
 
         public Server(string ipAddress, int port)
         {
@@ -97,21 +97,18 @@ namespace MBCoopServer
             {
                 if (stream.CanWrite)
                 {
-                    Client client = new Client(username, nextClientID++, tcpClient, HandleClientPacketReceived);
+                    ServerClient client = new ServerClient(username, nextClientID++, tcpClient, this);
                     _connectedClients.Add(client);
                     // Send back a response, and the assigned client ID
                     responseData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
                     stream.Write(responseData, 0, responseData.Length);
-                    // Let the other clients know that a new player has connected. Send the ID along.
-                    Packet packet = new Packet(Commands.NewPlayerConnectedID, Encoding.UTF8.GetBytes(client.ID.ToString()));
-                    SendPacketToClients(packet);
                     // Now broadcast a message to everyone else
-                    BroadcastMessage($"[MBCoop] Client: {client.Username} has connected to the server!");
+                    BroadcastMessage($"[MBCoop] Client: {client.Username}({client.ID}) has connected to the server!");
                 }
             }
         }
 
-        public void BroadcastMessage(string message, params Client[] excludedClients)
+        public void BroadcastMessage(string message, params ServerClient[] excludedClients)
         {
             lock (_connectedClients)
             {
@@ -120,27 +117,16 @@ namespace MBCoopServer
             }
         }
 
-        private void SendPacketToClients(Packet packet, params Client[] excludedClients)
+        public void SendPacketToClients(Packet packet, params BaseClient[] excludedClients)
         {
             lock (_connectedClients)
             {
-                foreach (Client cl in _connectedClients)
+                foreach (BaseClient cl in _connectedClients)
                 {
                     if(!Array.Exists(excludedClients, x => x == cl))
                     {
                         cl.SendPacket(packet);
                     }
-                }
-            }
-        }
-
-        private void HandleClientPacketReceived(Packet packet)
-        {
-            if(packet != null)
-            {
-                foreach(Client client in _connectedClients)
-                {
-                    client.SendPacket(packet);
                 }
             }
         }

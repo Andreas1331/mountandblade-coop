@@ -11,6 +11,7 @@ using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using System.Collections.Generic;
 using MBCoopClient.PacketTools;
+using MBCoopClient.Network;
 
 namespace MBCoopClient
 {
@@ -28,14 +29,13 @@ namespace MBCoopClient
                 _instance = value;
             }
         }
-        public List<int> otherClients = new List<int>();
 
         private Client _client;
         public Client Client
         {
             get
             {
-                return _client == null ? throw new Exception("Client is null!") : _client;
+                return _client;
             }
             set
             {
@@ -45,15 +45,26 @@ namespace MBCoopClient
 
         public void StartConnection()
         {
-            Client = new Client(Environment.UserName, OnClientPacketReceived, isHost: (Environment.UserName.Equals("andre")));
+            if(Client != null)
+            {
+                MessageHandler.SendMessage("You're already connected to a server!");
+                return;
+            }
+
+            if (!Environment.UserName.Equals("andre"))
+            {
+                Client = new GameHost(Environment.UserName);
+            }
+            else
+            {
+                Client = new GameClient(Environment.UserName);
+            }
             Tuple<bool, object[]> result = Client.ConnectToServer("192.168.0.22", 13000);
 
             if (result.Item1)
             {
-                MessageHandler.SendMessage(result.Item2[0].ToString());
                 Client.ID = Convert.ToInt32(result.Item2[1]);
-                MessageHandler.SendMessage("Granted ID : " + Client.ID);
-                HandleFirstTimeConnecting();
+                Client.OnFirstTimeConnecting(result.Item2[0].ToString());
             }
             else
             {
@@ -62,7 +73,8 @@ namespace MBCoopClient
             }
         }
 
-        private void OnClientPacketReceived(Packet packet)
+        // BaseClient is the client who received a Packet from the server
+        private void OnClientPacketReceived(BaseClient baseClient, Packet packet)
         {
             if(packet != null)
             {
@@ -70,27 +82,6 @@ namespace MBCoopClient
                 if(PacketHandler.PacketMethods.TryGetValue(packet.Command, out packetMethod))
                 {
                     packetMethod.Invoke(packet);
-                }
-            }
-        }
-
-        private void HandleFirstTimeConnecting()
-        {
-            // Send data. Determine if I'm the host or a client first.
-            // Client needs to send information regarding his party.
-            // TODO: Delete all the clients Ai
-            if (Client.IsHost)
-            {
-                MobileParty party = MobileParty.MainParty;
-                if(party != null)
-                {
-                    string partyName = party.Name.ToString();
-                    Vec2 position = party.GetPosition2D;
-                    MobilePartyNetworkContainer container = new MobilePartyNetworkContainer(partyName, position.x, position.y);
-                    byte[] data = Packet.ObjectToByteArray(container);
-                    Packet packet = new Packet(Commands.SendPartyDetails, data);
-                    Client.SendPacket(packet);
-                    MessageHandler.SendMessage("Sent party to the server..");
                 }
             }
         }

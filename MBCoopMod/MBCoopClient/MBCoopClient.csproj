@@ -211,7 +211,9 @@
     <Compile Include="ClientHandler.cs" />
     <Compile Include="HarmonyPatches\MobilePartyPatches.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Messages\Chat.cs" />
     <Compile Include="Messages\MessageHandler.cs" />
+    <Compile Include="Network\Client.cs" />
     <Compile Include="Network\DataStructures\MobilePartyNetworkContainer.cs" />
     <Compile Include="Network\DataStructures\Vector2.cs" />
     <Compile Include="Network\GameClient.cs" />

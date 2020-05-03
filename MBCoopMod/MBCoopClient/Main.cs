@@ -2,8 +2,10 @@
 using MBCoopClient.Messages;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Localization;
@@ -45,7 +47,7 @@ namespace MBCoopClient
                 //            newList.Add(lstParties.Current);
                 //    }
                 //}
-                //newList.ForEach(x => 
+                //newList.ForEach(x =>
                 //{
                 //    DestroyPartyAction.Apply(null, x);
                 //});
@@ -59,7 +61,7 @@ namespace MBCoopClient
                 //new MobileParty();
                 //MessageHandler.SendMessage("Created!");
                 //return;
-                
+
                 MBObjectManager.Instance.CreateObject<MobileParty>("fas2").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5); ;
                 MBObjectManager.Instance.CreateObject<MobileParty>("fas").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
                 MBObjectManager.Instance.CreateObject<MobileParty>("fas23").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
@@ -79,7 +81,7 @@ namespace MBCoopClient
                 //otherClient.Party.AddMembers(MobileParty.MainParty.MemberRoster.ToFlattenedRoster());
                 //MessageHandler.SendMessage("Length: " + MobileParty.All.Count);
 
-                //ClientHandler.Instance.StartConnection();
+                ClientHandler.Instance.StartConnection();
             }
         }
     }

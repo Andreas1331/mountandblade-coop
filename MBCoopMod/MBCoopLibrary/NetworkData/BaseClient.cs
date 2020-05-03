@@ -1,88 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using TaleWorlds.CampaignSystem;
 
 namespace MBCoopLibrary.NetworkData
 {
-    public class Client
+    public abstract class BaseClient
     {
-        public readonly string Username;
+        public string Username;
         public int ID;
-        public TcpClient TcpClientHandle { get; private set; }
-        public readonly bool IsHost = false;
+        public TcpClient TcpClientHandle { get; protected set; }
+        public bool IsHost = false;
 
-        public delegate void OnPacketReceivedDel(Packet packet);
-        private OnPacketReceivedDel _packetReceived; 
-
-        // Used by the client
-        public Client(string username, OnPacketReceivedDel packetReceived, bool isHost)
-        {
-            Username = username;
-            _packetReceived = packetReceived;
-            IsHost = isHost;
-        }
-
-        // Used by the server
-        public Client(string username, int id, TcpClient tcpClient, OnPacketReceivedDel packetReceived)
-        {
-            Username = username;
-            ID = id;
-            TcpClientHandle = tcpClient;
-            _packetReceived = packetReceived;
-            ListenForPackets();
-        }
-
-        // TODO: Refactor so it's reading the response from the server properly + make it async
-        public Tuple<bool, object[]> ConnectToServer(string ipAddress, int port)
-        {
-            // Create the TcpClient
-            TcpClientHandle = new TcpClient(ipAddress, port);
-            NetworkStream stream = TcpClientHandle.GetStream();
-
-            // Send the message to the TcpServer
-            byte[] usernameBytes = Encoding.UTF8.GetBytes(Username);
-            stream.Write(usernameBytes, 0, usernameBytes.Length);
-
-            // Receive the TcpServer response
-            // Buffer to store the response bytes
-            byte[] data = new byte[256];
-
-            // Read the first batch of the TcpServer response bytes
-            if (stream.CanRead)
-            {
-                bool handle = true;
-                while (handle)
-                {
-                    if (stream.DataAvailable)
-                    {
-                        stream.Read(data, 0, data.Length);
-                        object[] response = Packet.FromByteArray<object[]>(data);
-                        ListenForPackets();
-                        handle = !handle;
-                        return new Tuple<bool, object[]>(response[1] != null, response);
-                    }
-                }
-            }
-
-            // We failed to establish a connection
-            return null;
-        }
-
-        private bool IsDisconnected()
-        {
-            try
-            {
-                return TcpClientHandle == null || (TcpClientHandle.Client.Poll(10 * 1000, SelectMode.SelectRead) && (TcpClientHandle.Client.Available == 0));
-            }
-            catch (SocketException se)
-            {
-                // Handle exception
-                return true;
-            }
-        }
+        //private bool IsDisconnected()
+        //{
+        //    try
+        //    {
+        //        return TcpClientHandle == null || (TcpClientHandle.Client.Poll(10 * 1000, SelectMode.SelectRead) && (TcpClientHandle.Client.Available == 0));
+        //    }
+        //    catch (SocketException se)
+        //    {
+        //        // Handle exception
+        //        return true;
+        //    }
+        //}
 
         public void SendPacket(Packet packet)
         {
@@ -111,7 +55,7 @@ namespace MBCoopLibrary.NetworkData
             }
         }
 
-        private void ListenForPackets()
+        protected void ListenForPackets()
         {
             Task.Run(() =>
             {
@@ -152,8 +96,8 @@ namespace MBCoopLibrary.NetworkData
                         // Convert it into a packet datatype
                         string jsonString = Encoding.UTF8.GetString(packetBuffer);
                         packet = Packet.FromJson(jsonString);
-
-                        _packetReceived(packet);
+                        OnPacketReceived(packet);
+                        //_packetReceived(this, packet);
                     }
                     catch (Exception e)
                     {
@@ -164,6 +108,6 @@ namespace MBCoopLibrary.NetworkData
             });
         }
 
-        public virtual void OnMobilePartyInit(MobileParty party);
+        protected abstract void OnPacketReceived(Packet packet);
     }
 }

@@ -1,0 +1,51 @@
+﻿using MBCoopClient.Network;
+using MBCoopLibrary;
+using MBCoopLibrary.NetworkData;
+using System;
+using System.Text;
+using TaleWorlds.Core;
+using TaleWorlds.InputSystem;
+
+namespace MBCoopClient.Messages
+{
+    public class Chat
+    {
+        private bool isChatBoxOpen = false;
+        private readonly Client client;
+
+        public Chat(Client client)
+        {
+            this.client = client;
+        }
+
+        public void ListenForInputThisTick(float dt)
+        {
+            if (!Input.IsKeyPressed(InputKey.F10) || isChatBoxOpen)
+                return;
+
+            isChatBoxOpen = true;
+
+            TextInquiryData inqData = new TextInquiryData("Type your message", "(No empty messages allowed)", true, true, "Send", "Cancel", OnConfirmMessage, OnCancelMessage, false, IsMessageValid);
+            InformationManager.ShowTextInquiry(inqData, true);
+        }
+
+        private void OnConfirmMessage(string msg)
+        {
+            // Send the message
+            MessageHandler.SendMessage($"You: {msg}");
+            Packet packet = new Packet(Commands.SendMessage, Encoding.UTF8.GetBytes($"From {client.Username}: {msg}"));
+            client.SendPacket(packet);
+            isChatBoxOpen = false;
+        }
+
+        private void OnCancelMessage()
+        {
+            isChatBoxOpen = false;
+        }
+
+        private bool IsMessageValid(string msg)
+        {
+            return !String.IsNullOrEmpty(msg);
+        }
+    }
+}

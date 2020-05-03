@@ -1,6 +1,5 @@
-﻿using MBCoopLibrary.NetworkData;
+﻿using MBCoopServer.Network;
 using System;
-using System.Text;
 
 namespace MBCoopServer
 {

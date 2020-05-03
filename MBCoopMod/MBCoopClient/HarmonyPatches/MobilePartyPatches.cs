@@ -29,6 +29,7 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToSettlement")]
         private static void PrefixPatch_SetMoveGotoSettlement(MobileParty __instance, Settlement settlement)
         {
+            ClientHandler.Instance.Client?.OnSetMoveGotoSettlement(__instance, settlement);
             //if (ClientHandler.Instance.Client.IsHost)
             //{
             //    // Send everything
@@ -50,6 +51,7 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
+            ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
             //if (ClientHandler.Instance.Client.IsHost)
             //{
             //    // Send everything

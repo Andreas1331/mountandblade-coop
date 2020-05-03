@@ -62,17 +62,17 @@ namespace MBCoopClient
                 //MessageHandler.SendMessage("Created!");
                 //return;
 
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas2").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5); ;
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas23").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas5").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas6").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas78").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas8").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>("fas123").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                MBObjectManager.Instance.CreateObject<MobileParty>();
-                MBObjectManager.Instance.CreateObject<MobileParty>();
-                MBObjectManager.Instance.CreateObject<MobileParty>();
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas2").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5); ;
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas23").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas5").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas6").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas78").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas8").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>("fas123").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                //MBObjectManager.Instance.CreateObject<MobileParty>();
+                //MBObjectManager.Instance.CreateObject<MobileParty>();
+                //MBObjectManager.Instance.CreateObject<MobileParty>();
                 //otherClient.InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
                 //otherClient.Party.Visuals.SetMapIconAsDirty();
                 //otherClient.IsLordParty = true;

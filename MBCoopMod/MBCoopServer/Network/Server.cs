@@ -103,7 +103,14 @@ namespace MBCoopServer.Network
                     responseData = Packet.ObjectToByteArray<object>(new object[2] { "[MBCoop] You've successfully connected!",  client.ID});
                     stream.Write(responseData, 0, responseData.Length);
                     // Now broadcast a message to everyone else
-                    BroadcastMessage($"[MBCoop] Client: {client.Username}({client.ID}) has connected to the server!");
+                    BroadcastMessage($"[MBCoop] Client: {client.Username}({client.ID}) has connected to the server!", client);
+
+                    // Have the client ask for data from the host
+                    if(client.Username != "andre")
+                    {
+                        Packet requestPacket = new Packet(Commands.RequestFirsttimeConnection, null);
+                        SendPacketToClients(requestPacket, client);
+                    }
                 }
             }
         }

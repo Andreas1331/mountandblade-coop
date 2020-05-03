@@ -98,13 +98,29 @@ namespace MBCoopClient.Network
             if (party != null)
             {
                 string partyName = party.Name.ToString();
-                Vec2 position = party.GetPosition2D;
-                MobilePartyNetworkContainer container = new MobilePartyNetworkContainer(partyName, position.x, position.y);
+                Vector2 position = new Vector2(party.Position2D.x, party.Position2D.y);
+                MobilePartyNetworkContainer container = new MobilePartyNetworkContainer(partyName, position);
                 byte[] data = Packet.ObjectToByteArray(container);
                 Packet packet = new Packet(Commands.SendPartyDetails, data);
                 SendPacket(packet);
                 MessageHandler.SendMessage("Sent party to the server..");
             }
+        }
+
+        public override void OnSetMoveGotoPoint(MobileParty party, Vec2 point)
+        {
+            if (party.IsMainParty)
+            {
+                Vector2 pos = new Vector2(point.x, point.y);
+                MobilePartyNetworkContainer container = new MobilePartyNetworkContainer(party.Name.ToString(), pos);
+                Packet packet = new Packet(Commands.SendPartyGotoPoint, Packet.ObjectToByteArray(container));
+                SendPacket(packet);
+            }
+        }
+
+        public override void OnSetMoveGotoSettlement(MobileParty party, Settlement settlement)
+        {
+            //throw new NotImplementedException();
         }
     }
 }

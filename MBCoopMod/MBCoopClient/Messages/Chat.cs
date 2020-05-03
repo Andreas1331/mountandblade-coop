@@ -24,9 +24,21 @@ namespace MBCoopClient.Messages
                 return;
 
             isChatBoxOpen = true;
-
+            //Task.Run((Action)(() =>
+            //{
+            //    bool flag = true;
+            //    while (flag)
+            //    {
+            //        if (Input.IsKeyPressed(InputKey.Enter) && Main._chatInquiry.Text.Length > 0)
+            //        {
+            //            flag = false;
+            //            Client.SendData(Main._chatInquiry.Text);
+            //            InformationManager.HideInquiry();
+            //        }
+            //    }
+            //}));
             TextInquiryData inqData = new TextInquiryData("Type your message", "(No empty messages allowed)", true, true, "Send", "Cancel", OnConfirmMessage, OnCancelMessage, false, IsMessageValid);
-            InformationManager.ShowTextInquiry(inqData, true);
+            InformationManager.ShowTextInquiry(inqData, false);
         }
 
         private void OnConfirmMessage(string msg)

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MBCoopClient.Network.DataStructures
 {
+    [Serializable]
     public class Vector2
     {
         public float X { get; set; }

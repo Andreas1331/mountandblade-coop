@@ -6,14 +6,12 @@ namespace MBCoopClient.Network.DataStructures
     public class MobilePartyNetworkContainer
     {
         public string Name;
-        public float PosX;
-        public float PosY;
+        public Vector2 Position;
 
-        public MobilePartyNetworkContainer(string name, float posX, float posY)
+        public MobilePartyNetworkContainer(string name, Vector2 position)
         {
             Name = name;
-            PosX = posX;
-            PosY = posY;
+            Position = position;
         }
     }
 }

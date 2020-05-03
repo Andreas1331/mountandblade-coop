@@ -28,6 +28,7 @@ namespace MBCoopServer.Network
                 {
                     // The client sent a message, don't send it back to himself
                     case Commands.SendMessage:
+                    case Commands.SendPartyDetails:
                         server.SendPacketToClients(packet, this);
                         break;
                     default:

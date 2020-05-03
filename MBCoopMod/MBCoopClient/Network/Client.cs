@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.Library;
 
 namespace MBCoopClient.Network
 {
@@ -61,6 +62,8 @@ namespace MBCoopClient.Network
             return null;
         }
 
+
+
         #region Overrideables
         public virtual void OnFirstTimeConnecting(string welcomeMsg)
         {
@@ -68,6 +71,8 @@ namespace MBCoopClient.Network
         }
 
         public abstract void OnNewMobilePartyInit(MobileParty newParty);
+        public abstract void OnSetMoveGotoPoint(MobileParty party, Vec2 point);
+        public abstract void OnSetMoveGotoSettlement(MobileParty party, Settlement settlement);
         #endregion
 
         protected override void OnPacketReceived (Packet packet)

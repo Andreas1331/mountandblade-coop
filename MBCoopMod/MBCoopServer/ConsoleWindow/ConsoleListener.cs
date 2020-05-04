@@ -22,8 +22,18 @@ namespace MBCoopServer.ConsoleWindow
         {
             while (true)
             {
-                string msg = Console.ReadLine();
-                server.BroadcastMessage(msg);
+                string input = Console.ReadLine();
+                HandleInput(input);
+            }
+        }
+
+        private void HandleInput(string input)
+        {
+            // Check if the input contains a valid command
+            if (input.StartsWith("chatall"))
+            {
+                string msg = input.Substring("chatall".Length, input.Length);
+                server.BroadcastMessage($"ServerChat: {msg}");
             }
         }
     }

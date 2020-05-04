@@ -106,10 +106,10 @@ namespace MBCoopServer.Network
                     BroadcastMessage($"[MBCoop] Client: {client.Username}({client.ID}) has connected to the server!", client);
 
                     // Have the client ask for data from the host
-                    if(client.Username != "andre")
+                    if(!client.IsHost)
                     {
                         Packet requestPacket = new Packet(Commands.RequestFirsttimeConnection, null);
-                        SendPacketToClients(requestPacket, client);
+                        SendPacketToHost(requestPacket);
                     }
                 }
             }
@@ -135,6 +135,14 @@ namespace MBCoopServer.Network
                         cl.SendPacket(packet);
                     }
                 }
+            }
+        }
+
+        public void SendPacketToHost(Packet packet)
+        {
+            lock (_connectedClients)
+            {
+                _connectedClients.FirstOrDefault(x => x.IsHost)?.SendPacket(packet);
             }
         }
     }

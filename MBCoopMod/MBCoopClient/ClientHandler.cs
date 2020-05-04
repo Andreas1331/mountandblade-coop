@@ -51,6 +51,7 @@ namespace MBCoopClient
                 return;
             }
 
+            // TODO: Determine who's the host differently...
             if (Environment.UserName.Equals("andre"))
             {
                 Client = new GameHost(Environment.UserName);

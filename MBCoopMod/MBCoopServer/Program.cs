@@ -1,22 +1,20 @@
-﻿using MBCoopServer.Network;
+﻿using MBCoopServer.ConsoleWindow;
+using MBCoopServer.Network;
 using System;
 
 namespace MBCoopServer
 {
     public class Program
     {
-        private static Server _server;
+        private static Server server;
+        private static ConsoleListener consoleListener;
 
         private static void Main(string[] args)
         {
-            _server = new Server("192.168.0.22", 13000);
-            _server.StartServer();
+            server = new Server("192.168.0.22", 13000);
+            server.StartServer();
 
-            while (true)
-            {
-                string msg = Console.ReadLine();
-                _server.BroadcastMessage(msg);
-            }
+            consoleListener = new ConsoleListener(server);
         }
     }
 }

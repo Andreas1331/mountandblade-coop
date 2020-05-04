@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Timers;
 using TaleWorlds.CampaignSystem.Actions;
-using System.Linq;
-using System.Reflection;
 
 namespace MBCoopClient.Network
 {
@@ -109,6 +107,7 @@ namespace MBCoopClient.Network
 
         public override void OnSetMoveGotoPoint(MobileParty party, Vec2 point)
         {
+            // The client only cares about his own party
             if (party.IsMainParty)
             {
                 Vector2 pos = new Vector2(point.x, point.y);

@@ -25,6 +25,8 @@ namespace MBCoopClient.Network
 
         public override void OnSetMoveGotoPoint(MobileParty party, Vec2 point)
         {
+            // TODO: Sync all the other parties
+            // Current we only care about our own party
             if (party.IsMainParty)
             {
                 Vector2 pos = new Vector2(point.x, point.y);

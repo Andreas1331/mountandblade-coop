@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MBCoopClient.Game;
 using MBCoopClient.Messages;
 using System;
 using System.Collections.Generic;
@@ -82,7 +83,10 @@ namespace MBCoopClient
                 //MessageHandler.SendMessage("Length: " + MobileParty.All.Count);
 
                 ClientHandler.Instance.StartConnection();
+                coop = new CoopHandler();
+                coop.RegisterEvents();
             }
         }
+        CoopHandler coop;
     }
 }

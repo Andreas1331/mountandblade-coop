@@ -30,6 +30,7 @@ namespace MBCoopClient.PacketTools
         {
             if (ClientHandler.Instance.Client.IsHost)
             {
+                MessageHandler.SendMessage("RequestFirsttimeConnection");
                 MobileParty party = MobileParty.MainParty;
                 string partyName = party.Name.ToString();
                 Vector2 position = new Vector2(party.Position2D.x, party.Position2D.y);

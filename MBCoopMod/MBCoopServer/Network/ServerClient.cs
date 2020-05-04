@@ -14,6 +14,7 @@ namespace MBCoopServer.Network
             ID = id;
             TcpClientHandle = tcpClient;
             this.server = server;
+            IsHost = (username == "andre");
 
             ListenForPackets();
         }

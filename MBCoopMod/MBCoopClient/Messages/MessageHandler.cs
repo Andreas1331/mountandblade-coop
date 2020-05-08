@@ -9,16 +9,6 @@ namespace MBCoopClient.Messages
 {
     public static class MessageHandler 
     {
-        //public MessageHandler Instance { get
-        //    {
-        //        return Instance == null ? (Instance = new MessageHandler()) : Instance;
-        //    } 
-        //    private set
-        //    {
-        //        Instance = value;
-        //    }
-        //}
-
         public static void SendMessage(string msg)
         {
             if (msg == null)

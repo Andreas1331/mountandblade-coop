@@ -210,8 +210,10 @@
   <ItemGroup>
     <Compile Include="ClientHandler.cs" />
     <Compile Include="Game\CoopHandler.cs" />
+    <Compile Include="Game\Input Manager\InputHandler.cs" />
     <Compile Include="HarmonyPatches\CampaignPatches.cs" />
     <Compile Include="HarmonyPatches\MobilePartyPatches.cs" />
+    <Compile Include="HarmonyPatches\ObjectTypeRecordPatches.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\Chat.cs" />
     <Compile Include="Messages\MessageHandler.cs" />

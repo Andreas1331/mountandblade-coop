@@ -12,6 +12,7 @@ using TaleWorlds.Localization;
 using System.Collections.Generic;
 using MBCoopClient.PacketTools;
 using MBCoopClient.Network;
+using TaleWorlds.Diamond;
 
 namespace MBCoopClient
 {
@@ -43,14 +44,45 @@ namespace MBCoopClient
             }
         }
 
-        public void StartConnection()
+        public void AttemptPromptForIpaddress()
         {
-            if(Client != null)
-            {
-                MessageHandler.SendMessage("You're already connected to a server!");
+            // Game hasn't started yet
+            if (Campaign.Current == null)
                 return;
-            }
 
+            if(Client == null)
+            {
+                // Prompt
+                TextInquiryData inqData = new TextInquiryData("Enter server ipaddress", "(Example: 192.168.1.0:9999)", true, true, "Connect", "Cancel", OnConnect, null, false, IsIpaddressValid);
+                InformationManager.ShowTextInquiry(inqData, true);
+            }
+            else
+            {
+                // Prompt for disconnection
+            }
+        }
+
+        private void OnConnect(string msg)
+        {
+            string ip = msg.Substring(0, msg.IndexOf(':'));
+            int port;
+            if(int.TryParse(msg.Substring(msg.IndexOf(':') + 1, (msg.Length - (msg.IndexOf(':') + 1))), out port))
+            {
+                StartConnection(ip, port);
+            }
+            else
+            {
+                MessageHandler.SendMessage("Invalid ipaddress entered, please try again.");
+            }
+        }
+
+        private bool IsIpaddressValid(string msg)
+        {
+            return !String.IsNullOrEmpty(msg);
+        }
+
+        private void StartConnection(string ip, int port)
+        {
             // TODO: Determine who's the host differently...
             if (Environment.UserName.Equals("andre"))
             {
@@ -60,7 +92,7 @@ namespace MBCoopClient
             {
                 Client = new GameClient(Environment.UserName);
             }
-            Tuple<bool, object[]> result = Client.ConnectToServer("192.168.0.22", 13000);
+            Tuple<bool, object[]> result = Client.ConnectToServer(ip, port);
 
             if (result.Item1)
             {
@@ -69,21 +101,7 @@ namespace MBCoopClient
             }
             else
             {
-                // TODO: Provide a keystroke to reattempt a connection
                 MessageHandler.SendMessage("[MBCoop] You failed to establish a connection!");
-            }
-        }
-
-        // BaseClient is the client who received a Packet from the server
-        private void OnClientPacketReceived(BaseClient baseClient, Packet packet)
-        {
-            if(packet != null)
-            {
-                PacketHandler.HandlePacketDel packetMethod;
-                if(PacketHandler.PacketMethods.TryGetValue(packet.Command, out packetMethod))
-                {
-                    packetMethod.Invoke(packet);
-                }
             }
         }
     }

@@ -28,6 +28,7 @@ namespace MBCoopClient.PacketTools
 
         private static void OnRequestFirstimeConnection(Packet packet)
         {
+            // TODO: Only send this data to the actual player who requested it .. 
             if (ClientHandler.Instance.Client.IsHost)
             {
                 MessageHandler.SendMessage("RequestFirsttimeConnection");

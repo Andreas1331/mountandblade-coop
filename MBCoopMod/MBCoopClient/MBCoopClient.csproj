@@ -217,7 +217,6 @@
     <Compile Include="Game\Input Manager\InputHandler.cs" />
     <Compile Include="HarmonyPatches\CampaignPatches.cs" />
     <Compile Include="HarmonyPatches\MobilePartyPatches.cs" />
-    <Compile Include="HarmonyPatches\MBObjectManagerPatches.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\Chat.cs" />
     <Compile Include="Messages\MessageHandler.cs" />

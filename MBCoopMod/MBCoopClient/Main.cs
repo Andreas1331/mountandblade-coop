@@ -27,8 +27,6 @@ namespace MBCoopClient
 
         protected override void OnSubModuleLoad()
         {
-            MBObjectManagerPatches.TargetMethod();
-
             base.OnSubModuleLoad();
             Harmony harmony = new Harmony("CampaignSystem.TaleWorlds");
             harmony.PatchAll();

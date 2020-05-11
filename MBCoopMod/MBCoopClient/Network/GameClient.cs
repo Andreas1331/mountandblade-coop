@@ -16,15 +16,9 @@ namespace MBCoopClient.Network
     public class GameClient : Client
     {
         private List<MobileParty> newParties = new List<MobileParty>();
-        private System.Timers.Timer deletePartiesTimer;
 
         public GameClient(string username) : base(username, false)
         {
-            deletePartiesTimer = new System.Timers.Timer(2000);
-            deletePartiesTimer.Elapsed += OnTimedEvent;
-            deletePartiesTimer.AutoReset = true;
-            deletePartiesTimer.Enabled = true;
-
             OnTickEvent += OnTick;
         }
 
@@ -77,54 +71,6 @@ namespace MBCoopClient.Network
                 MessageHandler.SendMessage("New party: " + newParty.Name);
                 if(!newParty.IsMainParty)
                     newParties.Add(newParty);
-            }
-        }
-
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            return;
-            try
-            {
-                lock (newParties)
-                {
-                    List<MobileParty>.Enumerator parties = MobileParty.All.GetEnumerator();
-
-                    List<MobileParty> newList = new List<MobileParty>();
-                    while (parties.MoveNext())
-                    {
-                        if (parties.Current.IsMainParty)
-                            continue;
-
-                        newList.Add(parties.Current);
-                    }
-                    int count = newList.Count;
-                    newList.ForEach(x => x.RemoveParty());
-                    MessageHandler.SendMessage("Removed " + count + " parties..");
-                    return;
-
-                    for (int i = newParties.Count - 1; i >= 0; i--)
-                    {
-                        MobileParty party = newParties[i];
-                        if (party == null)
-                            continue;
-
-                        // Only consider deleting parties that are initialized to avoid null references
-                        if (!party.Name.Equals("{=!}unnamedMobileParty"))
-                        {
-                            if (!party.Name.ToString().StartsWith("MBC"))
-                            {
-                                MessageHandler.SendMessage($"Deleted party: " + party.Name);
-                                party.RemoveParty();
-                                //DestroyPartyAction.Apply(null, party);
-                                newParties.RemoveAt(i);
-                            }
-                        }
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageHandler.SendMessage(ex.Message);
             }
         }
 

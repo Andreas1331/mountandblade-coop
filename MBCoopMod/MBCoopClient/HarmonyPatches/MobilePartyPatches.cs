@@ -20,17 +20,10 @@ namespace MBCoopClient.HarmonyPatches
     [HarmonyPatch(typeof(MobileParty))]
     public class MobilePartyPatches
     {
-        static bool printed = false;
-
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MobileParty), MethodType.Constructor)]
         private static void PostfixPatch_Constructor(MobileParty __instance)
         {
-            if (!printed)
-            {
-                MessageHandler.SendMessage("ConstructorThread: " + Thread.CurrentThread.ManagedThreadId);
-                printed = !printed;
-            }
             ClientHandler.Instance.Client?.OnNewMobilePartyInit(__instance);
         }
 
@@ -60,7 +53,7 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
-            //ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
+            ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
         }
     }
 }

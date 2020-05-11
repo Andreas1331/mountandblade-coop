@@ -7,21 +7,60 @@ using TaleWorlds.Library;
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using System.Threading;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.Diamond;
 
 namespace MBCoopClient.Network
 {
     public class GameClient : Client
     {
         private List<MobileParty> newParties = new List<MobileParty>();
-        private Timer deletePartiesTimer;
+        private System.Timers.Timer deletePartiesTimer;
 
         public GameClient(string username) : base(username, false)
         {
-            deletePartiesTimer = new Timer(2000);
+            deletePartiesTimer = new System.Timers.Timer(2000);
             deletePartiesTimer.Elapsed += OnTimedEvent;
             deletePartiesTimer.AutoReset = true;
             deletePartiesTimer.Enabled = true;
+
+            OnTickEvent += OnTick;
+        }
+
+
+        private void OnTick(float obj)
+        {
+            if(newParties?.Count > 0)
+            {
+                try
+                {
+                    lock (newParties)
+                    {
+                        for (int i = newParties.Count - 1; i >= 0; i--)
+                        {
+                            MobileParty party = newParties[i];
+                            if (party == null)
+                                continue;
+
+                            // Only consider deleting parties that are initialized to avoid null references
+                            if (!party.Name.Equals("{=!}unnamedMobileParty"))
+                            {
+                                if (!party.Name.ToString().StartsWith("MBC"))
+                                {
+                                    MessageHandler.SendMessage($"Deleted party: " + party.Name);
+                                    DestroyPartyAction.Apply(null, party);
+                                    newParties.RemoveAt(i);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageHandler.SendMessage(ex.Message);
+                }
+            }
         }
 
         public override void OnFirstTimeConnecting(string welcomeMsg)
@@ -35,7 +74,9 @@ namespace MBCoopClient.Network
             // Keep track of new parties and delete accordingly
             lock (newParties)
             {
-                newParties.Add(newParty);
+                MessageHandler.SendMessage("New party: " + newParty.Name);
+                if(!newParty.IsMainParty)
+                    newParties.Add(newParty);
             }
         }
 
@@ -46,6 +87,21 @@ namespace MBCoopClient.Network
             {
                 lock (newParties)
                 {
+                    List<MobileParty>.Enumerator parties = MobileParty.All.GetEnumerator();
+
+                    List<MobileParty> newList = new List<MobileParty>();
+                    while (parties.MoveNext())
+                    {
+                        if (parties.Current.IsMainParty)
+                            continue;
+
+                        newList.Add(parties.Current);
+                    }
+                    int count = newList.Count;
+                    newList.ForEach(x => x.RemoveParty());
+                    MessageHandler.SendMessage("Removed " + count + " parties..");
+                    return;
+
                     for (int i = newParties.Count - 1; i >= 0; i--)
                     {
                         MobileParty party = newParties[i];
@@ -58,28 +114,12 @@ namespace MBCoopClient.Network
                             if (!party.Name.ToString().StartsWith("MBC"))
                             {
                                 MessageHandler.SendMessage($"Deleted party: " + party.Name);
-                                DestroyPartyAction.Apply(null, party);
+                                party.RemoveParty();
+                                //DestroyPartyAction.Apply(null, party);
                                 newParties.RemoveAt(i);
                             }
                         }
                     }
-
-                    //foreach (MobileParty party in newParties)
-                    //{
-                    //    if (party == null)
-                    //        continue;
-                    //    // Only consider deleting parties that are initialized to avoid null references
-                    //    if (!party.Name.Equals("{=!}unnamedMobileParty"))
-                    //    {
-                    //        if (!party.Name.ToString().StartsWith("MBC"))
-                    //        {
-                    //            MessageHandler.SendMessage($"Deleted party: " + party.Name);
-                    //            if(party != null)
-                    //                DestroyPartyAction.Apply(null, party);
-                    //            newParties[newParties.IndexOf(party)] = null;
-                    //        }
-                    //    }
-                    //}
                 }
             }
             catch(Exception ex)

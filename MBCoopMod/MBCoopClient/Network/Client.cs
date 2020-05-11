@@ -62,8 +62,6 @@ namespace MBCoopClient.Network
             return null;
         }
 
-
-
         #region Overrideables
         public virtual void OnFirstTimeConnecting(string welcomeMsg)
         {

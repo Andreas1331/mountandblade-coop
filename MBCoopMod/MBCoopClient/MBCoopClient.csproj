@@ -166,6 +166,10 @@
       <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Network.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="TaleWorlds.ObjectSystem">
+      <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="TaleWorlds.PlatformService">
       <HintPath>F:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.PlatformService.dll</HintPath>
       <Private>False</Private>
@@ -213,7 +217,7 @@
     <Compile Include="Game\Input Manager\InputHandler.cs" />
     <Compile Include="HarmonyPatches\CampaignPatches.cs" />
     <Compile Include="HarmonyPatches\MobilePartyPatches.cs" />
-    <Compile Include="HarmonyPatches\ObjectTypeRecordPatches.cs" />
+    <Compile Include="HarmonyPatches\MBObjectManagerPatches.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Messages\Chat.cs" />
     <Compile Include="Messages\MessageHandler.cs" />

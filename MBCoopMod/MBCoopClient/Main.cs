@@ -1,17 +1,20 @@
 ﻿using HarmonyLib;
 using MBCoopClient.Game;
 using MBCoopClient.Game.InputManager;
+using MBCoopClient.HarmonyPatches;
 using MBCoopClient.Messages;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
+using TaleWorlds.ObjectSystem;
 
 namespace MBCoopClient
 {
@@ -24,10 +27,11 @@ namespace MBCoopClient
 
         protected override void OnSubModuleLoad()
         {
+            MBObjectManagerPatches.TargetMethod();
+
             base.OnSubModuleLoad();
             Harmony harmony = new Harmony("CampaignSystem.TaleWorlds");
             harmony.PatchAll();
-
             input = new InputHandler();
             OnTickEvent += input.InputOnTick;
         }

@@ -8,20 +8,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.MountAndBlade;
 
 namespace MBCoopClient.HarmonyPatches
 {
     [HarmonyPatch(typeof(MobileParty))]
     public class MobilePartyPatches
     {
+        static bool printed = false;
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(MobileParty), MethodType.Constructor)]
         private static void PostfixPatch_Constructor(MobileParty __instance)
         {
+            if (!printed)
+            {
+                MessageHandler.SendMessage("ConstructorThread: " + Thread.CurrentThread.ManagedThreadId);
+                printed = !printed;
+            }
             ClientHandler.Instance.Client?.OnNewMobilePartyInit(__instance);
         }
 
@@ -51,18 +60,7 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
-            ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
-            //if (ClientHandler.Instance.Client.IsHost)
-            //{
-            //    // Send everything
-            //}
-            //else
-            //{
-            //    // This is a client, so only send his own movement
-            //    if (__instance.IsMainParty)
-            //    {
-            //    }
-            //}
+            //ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
         }
     }
 }

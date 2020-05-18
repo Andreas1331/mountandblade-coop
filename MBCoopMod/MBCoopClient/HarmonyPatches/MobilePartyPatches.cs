@@ -32,28 +32,13 @@ namespace MBCoopClient.HarmonyPatches
         private static void PrefixPatch_SetMoveGotoSettlement(MobileParty __instance, Settlement settlement)
         {
             ClientHandler.Instance.Client?.OnSetMoveGotoSettlement(__instance, settlement);
-            //if (ClientHandler.Instance.Client.IsHost)
-            //{
-            //    // Send everything
-            //}
-            //else
-            //{
-            //    // This is a client, so only send his own movement
-            //    if (__instance.IsMainParty)
-            //    {
-            //        string settlementName = settlement.GetName().ToString();
-            //        byte[] data = Encoding.UTF8.GetBytes(settlementName);
-            //        Packet packet = new Packet(Commands.SendPartyGotoSettlement, data);
-            //        ClientHandler.Instance.Client.SendPacket(packet);
-            //    }
-            //}
         }
 
         [HarmonyPrefix]
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
-            ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
+            //ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
         }
     }
 }

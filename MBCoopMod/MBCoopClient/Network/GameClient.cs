@@ -22,7 +22,6 @@ namespace MBCoopClient.Network
             OnTickEvent += OnTick;
         }
 
-
         private void OnTick(float obj)
         {
             if(newParties?.Count > 0)
@@ -42,10 +41,11 @@ namespace MBCoopClient.Network
                             {
                                 if (!party.Name.ToString().StartsWith("MBC"))
                                 {
-                                    MessageHandler.SendMessage($"Deleted party: " + party.Name);
                                     DestroyPartyAction.Apply(null, party);
-                                    newParties.RemoveAt(i);
                                 }
+
+                                // Remove the party nomatter what, as it's either deleted or shouldn't be deleted
+                                newParties.RemoveAt(i);
                             }
                         }
                     }
@@ -68,7 +68,6 @@ namespace MBCoopClient.Network
             // Keep track of new parties and delete accordingly
             lock (newParties)
             {
-                MessageHandler.SendMessage("New party: " + newParty.Name);
                 if(!newParty.IsMainParty)
                     newParties.Add(newParty);
             }

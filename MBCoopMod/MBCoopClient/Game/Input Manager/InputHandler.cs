@@ -12,6 +12,7 @@ using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.Core;
 using TaleWorlds.Diamond;
 using TaleWorlds.InputSystem;
+using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.ObjectSystem;
 
@@ -24,7 +25,6 @@ namespace MBCoopClient.Game.InputManager
             if (Input.IsKeyPressed(InputKey.B))
             {
                 List<MobileParty>.Enumerator parties = MobileParty.All.GetEnumerator();
-
                 List<MobileParty> newList = new List<MobileParty>();
                 while (parties.MoveNext())
                 {
@@ -35,6 +35,15 @@ namespace MBCoopClient.Game.InputManager
                 }
                 int count = newList.Count;
                 newList.ForEach(x => DestroyPartyAction.Apply(null, x));
+
+                MobileParty newParty = MBObjectManager.Instance.CreateObject<MobileParty>("MBC-FollowerParty");
+                newParty.InitializeMobileParty(new TextObject("MBC-FollowerParty"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
+                newParty.Party.Visuals.SetMapIconAsDirty();
+                newParty.IsLordParty = true;
+                newParty.Ai.SetDoNotMakeNewDecisions(true);
+                newParty.Party.AddMembers(MobileParty.MainParty.MemberRoster.ToFlattenedRoster());
+                newParty.SetMoveEscortParty(MobileParty.MainParty);
+
                 ClientHandler.Instance.Client = new GameClient("Andreas");
                 MessageHandler.SendMessage("Client created..");
             }

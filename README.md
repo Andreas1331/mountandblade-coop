@@ -63,7 +63,7 @@ Follow the steps below to set up the paths for your installation.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Make sure to have the following frameworks at hand. The collection of DLLs from Taleworlds will be available from your installation folder. So either install the game, or find any archive online to download them from.
 * .NET Framework 4.7.2
 * Harmony 2.x
 * Taleworlds.x DLLs

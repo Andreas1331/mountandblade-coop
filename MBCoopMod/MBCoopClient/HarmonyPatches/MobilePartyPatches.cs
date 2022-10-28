@@ -1,19 +1,5 @@
 ﻿using HarmonyLib;
-using MBCoopClient.Messages;
-using MBCoopClient.Network.DataStructures;
-using MBCoopLibrary;
-using MBCoopLibrary.NetworkData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
 using TaleWorlds.Library;
-using TaleWorlds.MountAndBlade;
 
 namespace MBCoopClient.HarmonyPatches
 {
@@ -38,7 +24,7 @@ namespace MBCoopClient.HarmonyPatches
         [HarmonyPatch("SetMoveGoToPoint")]
         private static void PrefixPatch_SetMoveGoToPoint(MobileParty __instance, Vec2 point)
         {
-            //ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
+            ClientHandler.Instance.Client?.OnSetMoveGotoPoint(__instance, point);
         }
     }
 }

@@ -36,26 +36,12 @@ namespace MBCoopClient.Game.InputManager
                 int count = newList.Count;
                 newList.ForEach(x => DestroyPartyAction.Apply(null, x));
 
-                MobileParty newParty = MBObjectManager.Instance.CreateObject<MobileParty>("MBC-FollowerParty");
-                newParty.InitializeMobileParty(new TextObject("MBC-FollowerParty"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5);
-                newParty.Party.Visuals.SetMapIconAsDirty();
-                newParty.IsLordParty = true;
-                newParty.Ai.SetDoNotMakeNewDecisions(true);
-                newParty.Party.AddMembers(MobileParty.MainParty.MemberRoster.ToFlattenedRoster());
-                newParty.SetMoveEscortParty(MobileParty.MainParty);
-
                 ClientHandler.Instance.Client = new GameClient("Andreas");
                 MessageHandler.SendMessage("Client created..");
             }
 
             if (Input.IsKeyPressed(InputKey.K))
             {
-                //MobileParty party = new MobileParty();
-                //party.StringId = "HIHIHIHI";
-                //MBObjectManager.Instance.RegisterObject<MobileParty>(party);
-
-                //MBObjectManager.Instance.CreateObject<MobileParty>("fas2").InitializeMobileParty(new TextObject("Players party"), new TroopRoster(), new TroopRoster(), MobileParty.MainParty.Position2D, 5); ;
-
                 List<MobileParty>.Enumerator parties = MobileParty.All.GetEnumerator();
 
                 List < MobileParty> newList = new List<MobileParty>();
@@ -76,7 +62,6 @@ namespace MBCoopClient.Game.InputManager
             if (Input.IsKeyPressed(InputKey.F9))
             {
                 ClientHandler.Instance.AttemptPromptForIpaddress();
-                //handler = new CoopHandler();
             }
         }
     }

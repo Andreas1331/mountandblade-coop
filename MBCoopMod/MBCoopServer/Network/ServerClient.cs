@@ -1,5 +1,6 @@
 ﻿using MBCoopLibrary;
 using MBCoopLibrary.NetworkData;
+using System;
 using System.Net.Sockets;
 
 namespace MBCoopServer.Network
@@ -14,7 +15,9 @@ namespace MBCoopServer.Network
             ID = id;
             TcpClientHandle = tcpClient;
             this.server = server;
-            IsHost = (username == "andre");
+            IsHost = (Program.hostFound ? false : true); //(username == "andre");
+            if (Program.hostFound == false)
+                Program.hostFound = true;
 
             ListenForPackets();
         }

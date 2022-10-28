@@ -104,7 +104,7 @@ namespace MBCoopClient.Network
 
         public override void OnSetMoveGotoSettlement(MobileParty party, Settlement settlement)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

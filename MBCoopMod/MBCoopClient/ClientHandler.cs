@@ -1,18 +1,8 @@
-﻿using Helpers;
-using MBCoopClient.Messages;
-using MBCoopLibrary;
-using MBCoopClient.Network.DataStructures;
-using MBCoopLibrary.NetworkData;
+﻿using MBCoopClient.Messages;
 using System;
-using System.Text;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.Core;
 using TaleWorlds.Library;
-using TaleWorlds.Localization;
-using System.Collections.Generic;
-using MBCoopClient.PacketTools;
 using MBCoopClient.Network;
-using TaleWorlds.Diamond;
 
 namespace MBCoopClient
 {
@@ -53,7 +43,7 @@ namespace MBCoopClient
             if(Client == null)
             {
                 // Prompt
-                TextInquiryData inqData = new TextInquiryData("Enter server ipaddress", "(Example: 192.168.1.0:9999)", true, true, "Connect", "Cancel", OnConnect, null, false, IsIpaddressValid);
+                TextInquiryData inqData = new TextInquiryData("Enter server ipaddress", "(Example: 192.168.1.0:9999)", true, true, "Connect", "Cancel", OnConnectPressed, null, false, IsIpaddressValid);
                 InformationManager.ShowTextInquiry(inqData, true);
             }
             else
@@ -62,7 +52,7 @@ namespace MBCoopClient
             }
         }
 
-        private void OnConnect(string msg)
+        private void OnConnectPressed(string msg)
         {
             string ip = msg.Substring(0, msg.IndexOf(':'));
             int port;
@@ -78,20 +68,50 @@ namespace MBCoopClient
 
         private bool IsIpaddressValid(string msg)
         {
+            // TODO: Use regex to validate format
             return !String.IsNullOrEmpty(msg);
         }
 
         private void StartConnection(string ip, int port)
         {
+            // Prompt
+            InquiryData inqData = new InquiryData("Is host?", "", true, true, "Yes", "No", 
+                () => 
+                {
+                    Client = new GameHost(Environment.UserName);
+                    Continue(ip, port);
+                }, 
+                () => 
+                {
+                    Client = new GameClient(Environment.UserName);
+                    Continue(ip, port);
+                }, null);
+            InformationManager.ShowInquiry(inqData, true);
+
             // TODO: Determine who's the host differently...
-            if (Environment.UserName.Equals("andre"))
-            {
-                Client = new GameHost(Environment.UserName);
-            }
-            else
-            {
-                Client = new GameClient(Environment.UserName);
-            }
+            //if (Environment.UserName.Equals("andre"))
+            //{
+            //    Client = new GameHost(Environment.UserName);
+            //}
+            //else
+            //{
+            //    Client = new GameClient(Environment.UserName);
+            //}
+            //Tuple<bool, object[]> result = Client.ConnectToServer(ip, port);
+
+            //if (result.Item1)
+            //{
+            //    Client.ID = Convert.ToInt32(result.Item2[1]);
+            //    Client.OnFirstTimeConnecting(result.Item2[0].ToString());
+            //}
+            //else
+            //{
+            //    MessageHandler.SendMessage("[MBCoop] You failed to establish a connection!");
+            //}
+        }
+
+        private void Continue(string ip, int port)
+        {
             Tuple<bool, object[]> result = Client.ConnectToServer(ip, port);
 
             if (result.Item1)

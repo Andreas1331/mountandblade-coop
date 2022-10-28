@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MBCoopServer.Network
@@ -22,15 +21,6 @@ namespace MBCoopServer.Network
 
         public Server(string ipAddress, int port)
         {
-            // 196.168.1.0:9000
-            string pattern = "[0-9]+.[0-9]+.[0-9]+.[0-9]+:[0-9]+";
-            Match m = Regex.Match("192168.2.0:9000", pattern);
-            if (m.Success)
-            {
-                Console.WriteLine("Match!");
-                Console.ReadKey();
-            }
-
             _ipAddress = IPAddress.Parse(ipAddress);
             _port = port;
             _serverHandle = new TcpListener(_ipAddress, _port);

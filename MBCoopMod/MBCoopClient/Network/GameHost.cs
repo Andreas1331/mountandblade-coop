@@ -1,13 +1,7 @@
-﻿using MBCoopClient.Messages;
-using MBCoopClient.Network.DataStructures;
+﻿using MBCoopClient.Network.DataStructures;
 using MBCoopLibrary;
 using MBCoopLibrary.NetworkData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.Library;
 
 namespace MBCoopClient.Network
@@ -20,7 +14,7 @@ namespace MBCoopClient.Network
 
         public override void OnNewMobilePartyInit(MobileParty newParty)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void OnSetMoveGotoPoint(MobileParty party, Vec2 point)
@@ -38,7 +32,7 @@ namespace MBCoopClient.Network
 
         public override void OnSetMoveGotoSettlement(MobileParty party, Settlement settlement)
         {
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

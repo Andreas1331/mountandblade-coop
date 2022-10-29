@@ -14,10 +14,9 @@
     <a href="https://github.com/Andreas1331/MBCoop/tree/master/MBCoopMod"><strong>Explore the code</strong></a>
     <br />
     <br />
-    <p>Disclaimer: This is not affiliated nor endorsed by Taleworlds Entertainment.</p>
+    <p><i>Disclaimer: This is not affiliated nor endorsed by Taleworlds Entertainment.</i></p>
   </p>
 </div>
-
 
 <!-- TABLE OF CONTENTS -->
 <details>

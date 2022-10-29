@@ -59,7 +59,6 @@ When this project was initially started Taleworld had internalized a substantial
 To get started I recommend opening the solution using Visual Studio 2019+ and run in debugmode. The settings in MBCoopClient will automatically build and output the DLL files to the required folder inside the Mount & Blade installation folder. After building, Visual Studio will start your game as well, and fire up the server from the MBCoopServer project. 
 Follow the steps below to set up the paths for your installation.
 * Inside Visual Studio 2019+ -> MBCoopClient -> properties -> Debug <br>From here change the 'Start external program' and 'Working directory' so they match your path
-* 
 
 ### Prerequisites
 

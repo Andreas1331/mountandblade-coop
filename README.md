@@ -46,7 +46,7 @@ Mount & Blade II: Bannerlord had at the time of starting this project just been 
 * MBCoopLibrary: contains classes shared as dependencies
 * MBCoopServer: the actual server
 
-At the current stage this modification is basically just a shell to facilitate further development. A host is able to boot up a server on which other client can join. The initial idea was to have the host join the server as well, and the host would synchronize everything (read: events, NPC movement e.g) with other connected clients. The client and server logic is implemented and players can have their ingame parties synchronized, though it is only their location and movement being transmitted between clients. There's also a chat system implemented, that does what you'd expect. Sends messages between clients.
+At the current stage this modification is basically just a shell to facilitate further development. A host is able to boot up a server on which another client can join. The initial idea was to have the host join the server as well, and the host would synchronize everything (read: events, NPC movement e.g) with other connected clients. The client and server logic is implemented and players can have their ingame parties synchronized, though it is only their location and movement being transmitted between clients. There's also a chat system implemented, that does what you'd expect. Sends messages between clients.
 
 When this project was initially started Taleworld had internalized a substantial number of classes from their API. This makes modifying the game difficult, which is why the project relies on Harmony to patch methods.
 

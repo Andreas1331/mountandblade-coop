@@ -41,7 +41,7 @@
 
 The project was intended to be a playground to learn more about TCP, and by extention the client-server architecture to create a modification that enables a real co-op experience to be enjoyed in Mount & Blade. 
 
-Mount & Blade II: Bannerlord had at the time of starting this project just been released, without any co-op option, so it was a perfect option to also try and get accustomed with their API. The Visual Studio solution consists of three projects.
+Mount & Blade II: Bannerlord had at the time of starting this project just been released, without any co-op option. Therefore I took this as an opportunity to try and get accustomed with their modding API, as the official documentation was sparse. The Visual Studio solution consists of three projects.
 * MBCoopClient: contains game logic
 * MBCoopLibrary: contains classes shared as dependencies
 * MBCoopServer: the actual server
